@@ -1,2 +1,2 @@
-# thePets
-Repositorio principal para la creación de la manada
+# PetHost
+Repositorio principal para la creación de petHost.
