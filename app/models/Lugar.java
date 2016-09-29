@@ -1,5 +1,6 @@
 package models;
 import com.avaje.ebean.Model;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -25,25 +26,24 @@ public class Lugar extends Model {
     @OneToOne(mappedBy = "lugar")
     private Usuario usuario;
 
-    private double latitud;
-    private double longitud;
+    private Pais latitud;
+    private Ciudad longitud;
 
     public Lugar()
     {
         this.id=null;
         this.name ="NO NAME";
-        latitud=0.0;
-        longitud=0.0;
+        latitud=null;
+        longitud=null;
     }
     public Lugar(Long id) {
         this();
         this.id = id;
     }
 
-    public Lugar(Long id, String name, Double latitud, Double longitud)
+    public Lugar(String name, Pais latitud, Ciudad longitud)
     {
         this();
-        this.id = id;
         this.name = name;
         this.latitud=latitud;
         this.longitud = longitud;
@@ -63,27 +63,42 @@ public class Lugar extends Model {
     public void setName(String name) {
         this.name = name;
     }
-    public Double getLatitud() {
+    public Pais getPais() {
         return latitud;
     }
 
-    public void setLatitud(double latitud) {
+    public void setPais(Pais latitud) {
         this.latitud = latitud;
     }
-    public Double getLongitud() {
+    public Ciudad getCiudad() {
         return longitud;
     }
 
-    public void setLongitud(double longitud) {
+    public void setCiudad(Ciudad longitud) {
         this.longitud = longitud;
     }
-    @Override
-    public String toString() {
-        return "Lugar{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", latitud=" + latitud + '\'' +
-                ", longitud=" + longitud + '\'' +
-                '}';
+
+    public void setHost(Host id) {
+        this.host = id;
     }
+    public Host getHost(){return host;}
+    public void setUsuario(Usuario id) {
+        this.usuario = id;
+    }
+    public Usuario getUsuario(){return usuario;}
+
+    public static Lugar bind(JsonNode j, Calificacion ca) {
+        String name = j.findPath("direccion").asText();
+        String pais = j.findPath("Pais").asText();
+        String ciudad = j.findPath("Ciudad").asText();
+        Lugar cali = new Lugar(name, Pais.valueOf(pais), Ciudad.valueOf(ciudad));
+        return cali;
+    }
+
+    public void update(Lugar nuevoCom) {
+        this.setName(nuevoCom.getName());
+        this.setCiudad(nuevoCom.getCiudad());
+        this.setPais(nuevoCom.getPais());
+    }
+
 }

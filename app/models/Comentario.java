@@ -1,6 +1,7 @@
 package models;
 import com.avaje.ebean.Model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import javax.persistence.*;
 /**
@@ -33,10 +34,10 @@ public class Comentario extends Model{
         this.id = id;
     }
 
-    public Comentario(Long id, String comentario)
+    public Comentario(Calificacion ca, String comentario)
     {
         this();
-        this.id = id;
+        this.calificacion = ca;
         this.comentario=comentario;
     }
 
@@ -56,11 +57,19 @@ public class Comentario extends Model{
         this.comentario = comentario;
     }
 
-    @Override
-    public String toString() {
-        return "Comentario{" +
-                "id=" + id +
-                ", comentario='" + comentario + '\'' +
-                '}';
+    //-----------------------------------------------------------
+    // Métodos auxiliares
+    //-----------------------------------------------------------
+
+
+    public static Comentario bind(JsonNode j, Calificacion ca) {
+        String comentario = j.findPath("comentario").asText();
+        Comentario cali = new Comentario(ca, comentario);
+        return cali;
+    }
+
+    public void update(Comentario nuevoCom) {
+        this.setComentario(nuevoCom.getComentario());
+        this.calificacion = nuevoCom.calificacion;
     }
 }

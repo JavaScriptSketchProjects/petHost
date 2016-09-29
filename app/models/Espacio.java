@@ -42,10 +42,9 @@ public class Espacio extends Model {
         this.id = id;
     }
 
-    public Espacio(Long id, String name, Integer capacidad, Double precio, Calendar calendario)
+    public Espacio(String name, Integer capacidad, Double precio, Calendar calendario)
     {
         this();
-        this.id = id;
         this.name = name;
         this.capacidad=capacidad;
         this.precio = precio;

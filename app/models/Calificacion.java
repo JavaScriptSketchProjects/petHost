@@ -2,6 +2,8 @@ package models;
 
 import com.avaje.ebean.Model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.databind.JsonNode;
+
 import javax.persistence.*;
 import java.util.List;
 /**
@@ -37,10 +39,10 @@ public class Calificacion extends Model {
         this.id = id;
     }
 
-    public Calificacion(Long id, String name, Integer numero)
+    public Calificacion(String name, Integer numero, Host phost)
     {
         this();
-        this.id = id;
+        this.host = phost;
         this.name = name;
         this.numero=numero;
     }
@@ -62,6 +64,14 @@ public class Calificacion extends Model {
         this.id = id;
     }
 
+    public int getNum() {
+        return numero;
+    }
+
+    public void setNum(int num) {
+        this.numero = num;
+    }
+
     public String getName() {
         return name;
     }
@@ -69,14 +79,22 @@ public class Calificacion extends Model {
     public void setName(String name) {
         this.name = name;
     }
-    @Override
-    public String toString() {
-        return "Calificacion{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", numero=" + numero + '\'' +
-                ", cantidad comentarios=" + comentarios.size() + '\'' +
-                '}';
+    //-----------------------------------------------------------
+    // Métodos auxiliares
+    //-----------------------------------------------------------
+
+
+    public static Calificacion bind(JsonNode j, Host host) {
+        String nombre = j.findPath("nombre").asText();
+        int numero = j.findPath("numero").asInt();
+        Calificacion cali = new Calificacion(nombre, numero, host);
+        return cali;
+    }
+
+    public void update(Calificacion nuevaCali) {
+        this.setName(nuevaCali.getName());
+        this.setNum(nuevaCali.getNum());
+        this.setComentarios(nuevaCali.getComentarios());
     }
 
 }
