@@ -30,7 +30,6 @@ public class Host extends Model {
 
     @OneToOne(mappedBy = "host")
     private Lugar lugar;
-
     public Host()
     {
         this.id=null;
