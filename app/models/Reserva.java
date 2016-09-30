@@ -1,9 +1,12 @@
 package models;
 import com.avaje.ebean.Model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by USUARIO on 28/09/2016.
@@ -49,10 +52,9 @@ public class Reserva extends Model{
         this.id = id;
     }
 
-    public Reserva(Long id, String name, Double precio,Integer numMascotas, Date fecha1, Date fecha2)
+    public Reserva(String name, Double precio,Integer numMascotas, Date fecha1, Date fecha2)
     {
         this();
-        this.id = id;
         this.name = name;
         this.precio=precio;
         this.numMascotas=numMascotas;
@@ -107,8 +109,34 @@ public class Reserva extends Model{
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", precio=" + precio + '\'' +
-                ", num mascotas=" + numMascotas+ '\'' +
+                ", numMascotas=" + numMascotas+ '\'' +
                 ", Estado =" + estado + '\'' +
                 '}';
+    }
+
+
+    public static Reserva bind(JsonNode j) {
+        String nombre = j.findPath("name").asText();
+        Double precio = j.findPath("precio").asDouble();
+        int num = j.findPath("numMascotas").asInt();
+        String fecha1 = j.findPath("fecha1").asText();
+        String fecha2 = j.findPath("fecha2").asText();
+
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+        Date entrada = null;
+        Date salida = null;
+        try{
+            entrada = formatter.parse(fecha1);
+            salida = formatter.parse(fecha2);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Reserva cali = new Reserva(nombre, precio, num, entrada, salida);
+        return cali;
+    }
+
+    public void update(Reserva nuevaCali) {
+        this.setFecha1(nuevaCali.getFecha1());
+        this.setFecha2(nuevaCali.getFecha2());
     }
 }

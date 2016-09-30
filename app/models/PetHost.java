@@ -1,6 +1,7 @@
 package models;
 
 import com.avaje.ebean.Model;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -43,10 +44,9 @@ public class PetHost extends Model {
         this.id = id;
     }
 
-    public PetHost(Long id, String name, String adminUser, String password)
+    public PetHost(String name, String adminUser, String password)
     {
         this();
-        this.id = id;
         this.name = name;
         this.adminUser=adminUser;
         this.password=password;
@@ -101,14 +101,17 @@ public class PetHost extends Model {
 
     public void addPersona(Usuario nuevo){ personas.add(nuevo);}
 
-    @Override
-    public String toString() {
-        return "PetHost{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", admin=" + adminUser + '\'' +
-                ", num Personas Host=" + personasHost.size() + '\'' +
-                ", num Personas =" + personas.size() + '\'' +
-                '}';
+    //-----------------------------------------------------------
+    // Métodos auxiliares
+    //-----------------------------------------------------------
+
+
+    public static PetHost bind(JsonNode j) {
+        String nombre = j.findPath("nombre").asText();
+        String admin = j.findPath("admin").asText();
+        String password = j.findPath("password").asText();
+        PetHost cali = new PetHost(nombre, admin, password);
+        return cali;
     }
+
 }

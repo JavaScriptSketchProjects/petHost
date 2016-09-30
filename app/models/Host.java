@@ -1,6 +1,7 @@
 package models;
 import com.avaje.ebean.Model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import javax.persistence.*;
 import java.util.List;
@@ -54,16 +55,16 @@ public class Host extends Model {
         this.id = id;
     }
 
-    public Host(Long id, String name,String email,String nickName, String password,Long numContacto)
+    public Host(String name,String email,String nickName, String password,Long numContacto)
     {
         this();
-        this.id = id;
         this.name = name;
         this.email=email;
         this.nickName=nickName;
         this.password=password;
         this.numContacto=numContacto;
-
+        this.calificaciones = new ArrayList<Calificacion>();
+        this.espacios = new ArrayList<Espacio>();
     }
     public List<Espacio> getEspacios() {
         return espacios;
@@ -140,5 +141,23 @@ public class Host extends Model {
                 ", cantidad espacios=" + espacios.size() + '\'' +
                 ", cantidad calificaciones=" + calificaciones.size() + '\'' +
                 '}';
+    }
+    //-----------------------------------------------------------
+    // Métodos auxiliares
+    //-----------------------------------------------------------
+
+
+    public static Host bind(JsonNode j) {
+        String nombre = j.findPath("name").asText();
+        String email = j.findPath("email").asText();
+        String password = j.findPath("password").asText();
+        String nickname = j.findPath("nickname").asText();
+        Long numero = j.findPath("numero").asLong();
+        Host cali = new Host(nombre, email, password, nickname, numero);
+        return cali;
+    }
+
+    public void update(Host nuevaCali) {
+        this.setNumContacto(nuevaCali.getNumContacto());
     }
 }

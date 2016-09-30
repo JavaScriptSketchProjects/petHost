@@ -1,6 +1,7 @@
 package models;
 import com.avaje.ebean.Model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import javax.persistence.*;
 import java.util.Calendar;
@@ -42,13 +43,12 @@ public class Espacio extends Model {
         this.id = id;
     }
 
-    public Espacio(String name, Integer capacidad, Double precio, Calendar calendario)
+    public Espacio(String name, Integer capacidad, Double precio)
     {
         this();
         this.name = name;
         this.capacidad=capacidad;
         this.precio = precio;
-        this.calendario=calendario;
     }
 
     public List<Reserva> getReservas() {
@@ -106,5 +106,20 @@ public class Espacio extends Model {
                 ", precio=" + precio + '\'' +
                 ", cant Reservas=" + reservas.size() + '\'' +
                 '}';
+    }
+
+
+    public static Espacio bind(JsonNode j) {
+        String nombre = j.findPath("name").asText();
+        Integer cap = j.findPath("capacidad").asInt();
+        Double precio = j.findPath("precio").asDouble();
+        Espacio cali = new Espacio(nombre, cap, precio);
+        return cali;
+    }
+
+    public void update(Espacio nuevaCali) {
+        this.setCapacidad(nuevaCali.getCapacidad());
+        this.setPrecio(nuevaCali.getPrecio());
+        this.setName(nuevaCali.getName());
     }
 }

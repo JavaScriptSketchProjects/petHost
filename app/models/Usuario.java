@@ -1,5 +1,6 @@
 package models;
 import com.avaje.ebean.Model;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -45,15 +46,15 @@ public class Usuario extends Model {
         this.id = id;
     }
 
-    public Usuario(Long id, String name,String email,String nickName, String password,Long numContacto)
+    public Usuario(String name,String email,String nickName, String password,Long numContacto)
     {
         this();
-        this.id = id;
         this.name = name;
         this.email=email;
         this.nickName=nickName;
         this.password=password;
         this.numContacto=numContacto;
+        this.reservas = new ArrayList<Reserva>();
 
     }
     public List<Reserva> getReservas() {
@@ -120,5 +121,19 @@ public class Usuario extends Model {
                 ", numContacto=" + numContacto + '\'' +
                 ", cantidad reservas=" + reservas.size() + '\'' +
                 '}';
+    }
+
+    public static Usuario bind(JsonNode j) {
+        String nombre = j.findPath("name").asText();
+        String email = j.findPath("email").asText();
+        String password = j.findPath("password").asText();
+        String nickname = j.findPath("nickname").asText();
+        Long numero = j.findPath("numero").asLong();
+        Usuario cali = new Usuario(nombre, email, password, nickname, numero);
+        return cali;
+    }
+
+    public void update(Usuario nuevaCali) {
+        this.setNumContacto(nuevaCali.getNumContacto());
     }
 }
