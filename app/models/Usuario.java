@@ -1,5 +1,6 @@
 package models;
 import com.avaje.ebean.Model;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -16,13 +17,19 @@ public class Usuario extends Model {
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE,generator = "Usuario")
     private Long id;
+
     private String name;
 
     @OneToMany(mappedBy = "usuario")
     private List<Reserva > reservas;
 
-    @OneToOne(mappedBy = "usuario")
+    @OneToOne
+    @JoinColumn(name="lugar_id")
     private Lugar lugar;
+
+    @ManyToOne(cascade= CascadeType.ALL)
+    @JsonBackReference
+    private PetHost pethost;
 
     private String email;
     private String nickName;

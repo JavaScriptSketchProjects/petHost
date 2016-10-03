@@ -29,7 +29,8 @@ public class Host extends Model {
     @OneToMany(mappedBy = "host")
     private List<Espacio > espacios;
 
-    @OneToOne(mappedBy = "host")
+    @OneToOne
+    @JoinColumn(name="lugar_id")
     private Lugar lugar;
 
     private String email;

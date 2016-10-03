@@ -15,14 +15,17 @@ public class Lugar extends Model {
     public static Finder<Long, Lugar> FINDER = new Finder<>(Lugar.class);
 
     @Id
-    @GeneratedValue(strategy= GenerationType.SEQUENCE,generator = "Espacio")
+    @GeneratedValue(strategy= GenerationType.SEQUENCE,generator = "Lugar")
     private Long id;
+
     private String name;
 
-    @OneToOne(mappedBy = "lugar")
+    @OneToOne
+    @JoinColumn(name="host_id")
     private Host host;
 
-    @OneToOne(mappedBy = "lugar")
+    @OneToOne
+    @JoinColumn(name="user_id")
     private Usuario usuario;
 
     private double latitud;
